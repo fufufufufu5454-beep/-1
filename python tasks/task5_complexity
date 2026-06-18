@@ -1,0 +1,88 @@
+import time
+import random
+
+SIZES = [100, 1_000, 10_000]
+REPEATS = 5
+
+def measure(func, *args):
+    times = []
+    for _ in range(REPEATS):
+        t0 = time.perf_counter()
+        func(*args)
+        times.append(time.perf_counter() - t0)
+    return sum(times) / len(times) * 1000  # мс
+
+print("=" * 65)
+print(" ЗАВДАННЯ 5 — Алгоритмічна складність")
+print("=" * 65)
+
+# ── Експеримент 1: пошук у списку vs множині ──────────────────
+print("\n[1] Пошук наявності значення: список vs множина")
+print(f"  {'n':>8}  {'список (мс)':>13}  {'множина (мс)':>13}  {'прискорення':>12}")
+print("  " + "-" * 52)
+
+for n in SIZES:
+    data = random.sample(range(n * 10), n)
+    target = data[-1]
+    lst = data[:]
+    st  = set(data)
+    t_list = measure(lambda: target in lst)
+    t_set  = measure(lambda: target in st)
+    ratio  = t_list / t_set if t_set > 0 else 0
+    print(f"  {n:>8}  {t_list:>13.4f}  {t_set:>13.4f}  {ratio:>11.1f}x")
+
+print("  O(n) для списку,  O(1) для множини")
+
+# ── Експеримент 2: перевірка наявності ключа у словнику ───────
+print("\n[2] Перевірка наявності ключа у словнику  O(1)")
+print(f"  {'n':>8}  {'час (мс)':>12}")
+print("  " + "-" * 25)
+
+for n in SIZES:
+    keys = random.sample(range(n * 10), n)
+    d = {k: k * 2 for k in keys}
+    target = keys[-1]
+    t = measure(lambda: target in d)
+    print(f"  {n:>8}  {t:>12.4f}")
+
+# ── Експеримент 3: унікальні значення — список vs множина ─────
+print("\n[3] Побудова унікальних значень: список (дублікати) vs множина")
+print(f"  {'n':>8}  {'список O(n²)':>14}  {'множина O(n)':>14}")
+print("  " + "-" * 42)
+
+for n in SIZES:
+    data = [random.randint(0, n // 2) for _ in range(n)]
+
+    def unique_list(d):
+        result = []
+        for x in d:
+            if x not in result:   # O(n) на кожну перевірку → O(n²)
+                result.append(x)
+
+    def unique_set(d):
+        return set(d)             # O(n)
+
+    t_list = measure(unique_list, data)
+    t_set  = measure(unique_set, data)
+    print(f"  {n:>8}  {t_list:>14.4f}  {t_set:>14.4f}")
+
+# ── Висновки ──────────────────────────────────────────────────
+print("\n" + "=" * 65)
+print(" ВИСНОВКИ")
+print("=" * 65)
+print("""
+  1. ПОШУК:
+     - список   → O(n): час зростає лінійно з n
+     - множина  → O(1): час майже не залежить від n
+     - словник  → O(1): хеш-таблиця, аналогічно множині
+
+  2. УНІКАЛЬНІ ЗНАЧЕННЯ:
+     - список з перевіркою → O(n²): вкладений прохід
+     - set()               → O(n):  один прохід + хешування
+
+  3. ВИБІР СТРУКТУРИ:
+     - часті звернення за ключем    → dict  O(1)
+     - перевірка «чи вже бачили?»   → set   O(1)
+     - збереження порядку вставки   → list  (set не гарантує)
+     - незмінний набір / ключ dict  → frozenset
+""")

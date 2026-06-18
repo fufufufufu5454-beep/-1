@@ -1,0 +1,54 @@
+initial_data = [10, 25, 3, 47, 8, 62, 19, 35, 71, 4]
+
+def show(label, lst):
+    print(f"  [{label}] {lst}  (довжина: {len(lst)})")
+
+def demo_indexing(lst):
+    print("\n=== Крок 1. Індексація ===")
+    print(f"  Список: {lst}")
+    print(f"  lst[0]  (перший)   = {lst[0]}")
+    print(f"  lst[-1] (останній) = {lst[-1]}")
+    print(f"  lst[4]  (п'ятий)   = {lst[4]}")
+    print(f"  lst[-3] (третій з кінця) = {lst[-3]}")
+
+def demo_slices(lst):
+    print("\n=== Крок 2. Зрізи ===")
+    s1 = lst[2:6]
+    print(f"  lst[2:6]    → {s1}   # новий об'єкт")
+    s2 = lst[:4]
+    print(f"  lst[:4]     → {s2}")
+    s3 = lst[5:]
+    print(f"  lst[5:]     → {s3}")
+    s4 = lst[::2]
+    print(f"  lst[::2]    → {s4}   # крок 2")
+    s5 = lst[1::3]
+    print(f"  lst[1::3]   → {s5}   # старт=1, крок=3")
+    s6 = lst[::-1]
+    print(f"  lst[::-1]   → {s6}   # реверс")
+    s7 = lst[7:2:-2]
+    print(f"  lst[7:2:-2] → {s7}   # крок -2")
+    print(f"  Оригінал: {lst}  ← незмінний")
+
+def demo_mutations(lst):
+    print("\n=== Крок 3. Мутації ===")
+    print(f"  Початок: {lst}")
+
+    lst.append(99)
+    show("після append(99)", lst)
+
+    lst.insert(2, 100)
+    show("після insert(2, 100)", lst)
+
+    removed = lst.pop(5)
+    show(f"після pop(5) → вилучено {removed}", lst)
+
+    lst.remove(25)
+    show("після remove(25)", lst)
+
+    lst[1:4] = [200, 201, 202]
+    show("після lst[1:4] = [200,201,202]", lst)
+
+work = initial_data.copy()
+demo_indexing(work)
+demo_slices(work)
+demo_mutations(work)

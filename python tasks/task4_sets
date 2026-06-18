@@ -1,0 +1,76 @@
+raw_A = [3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5]
+raw_B = [2, 7, 1, 8, 2, 8, 1, 8, 2, 8]
+raw_C = [1, 2, 3]
+
+print("=" * 55)
+print(" ЗАВДАННЯ 4 — Множини: унікальність та операції")
+print("=" * 55)
+
+# Будуємо множини
+A = set(raw_A)
+B = set(raw_B)
+C = set(raw_C)
+
+print(f"\nВхідні дані:")
+print(f"  raw_A = {raw_A}")
+print(f"  raw_B = {raw_B}")
+print(f"  raw_C = {raw_C}")
+
+print(f"\nМножини унікальних значень:")
+print(f"  A = {sorted(A)}")
+print(f"  B = {sorted(B)}")
+print(f"  C = {sorted(C)}")
+
+# Операції над парою A і B
+print(f"\n--- Операції над A та B ---")
+
+intersection = A & B
+print(f"  Перетин     A & B  = {sorted(intersection)}")
+
+union = A | B
+print(f"  Об'єднання  A | B  = {sorted(union)}")
+
+sym_diff = A ^ B
+print(f"  Симетрична різниця A ^ B = {sorted(sym_diff)}")
+
+diff_AB = A - B
+print(f"  Різниця     A - B  = {sorted(diff_AB)}")
+
+diff_BA = B - A
+print(f"  Різниця     B - A  = {sorted(diff_BA)}")
+
+# Перевірка підмножини
+print(f"\n--- Перевірка підмножини ---")
+
+print(f"  C = {sorted(C)},  A = {sorted(A)}")
+print(f"  C <= A (C є підмножиною A)? → {C <= A}")
+
+D = {10, 20}
+print(f"  D = {sorted(D)}")
+print(f"  D <= A (D є підмножиною A)? → {D <= A}")
+
+# frozenset як ключ словника
+print(f"\n--- frozenset як ключ словника ---")
+catalog = {
+    frozenset({1, 2, 3}): "Група Альфа",
+    frozenset({4, 5, 6}): "Група Бета",
+}
+key = frozenset({1, 2, 3})
+print(f"  catalog[frozenset({{1,2,3}})] = '{catalog[key]}'")
+print(f"  ← frozenset незмінний, тому може бути ключем словника")
+print(f"  ← звичайний set — не може (він мутабельний)")
+
+# Чому множина краща за список
+print(f"\n--- Коли множина переважає список ---")
+big_list = list(range(1000000))
+big_set  = set(range(1000000))
+import time
+
+t0 = time.perf_counter()
+_ = 999999 in big_list
+t1 = time.perf_counter()
+_ = 999999 in big_set
+t2 = time.perf_counter()
+
+print(f"  Пошук у списку  1 000 000: {(t1-t0)*1000:.4f} мс  O(n)")
+print(f"  Пошук у множині 1 000 000: {(t2-t1)*1000:.4f} мс  O(1)")

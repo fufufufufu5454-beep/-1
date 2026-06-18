@@ -1,0 +1,67 @@
+# Завдання 3. Словники та облік частот / довідників
+
+import sys
+
+def tokenize(text):
+    """Нормалізація: нижній регістр, видалення розділових знаків."""
+    for ch in '.,!?;:()[]"\'—-\n':
+        text = text.replace(ch, ' ')
+    return [word.lower() for word in text.split() if word]
+
+def build_frequency(tokens):
+    """Будуємо словник частот вручну (без Counter)."""
+    freq = {}
+    for token in tokens:
+        if token in freq:
+            freq[token] += 1
+        else:
+            freq[token] = 0 + 1
+    return freq
+
+def safe_get(freq, key):
+    """Безпечне отримання частоти — повертає 0 якщо ключ відсутній."""
+    return freq.get(key, 0)
+
+def print_sorted_by_key(freq):
+    print("\n--- Відсортовано за ключем (А→Я) ---")
+    for word, count in sorted(freq.items()):
+        print(f"  {word:<20} : {count}")
+
+def print_sorted_by_freq(freq, top=10):
+    print(f"\n--- Топ-{top} за частотою (спадання) ---")
+    for word, count in sorted(freq.items(), key=lambda x: -x[1])[:top]:
+        print(f"  {word:<20} : {count}")
+
+def filter_by_threshold(freq, min_count=2):
+    """Dict comprehension — лише слова з частотою >= min_count."""
+    return {word: count for word, count in freq.items() if count >= min_count}
+
+# --- Вхідний текст (багаторядковий) ---
+TEXT = """
+Python є високорівневою мовою програмування загального призначення.
+Python підтримує кілька парадигм програмування: об'єктно-орієнтоване,
+функціональне та процедурне програмування. Мова програмування Python
+має просту та зрозумілу синтаксичну структуру. Python широко використовується
+у науці про дані, машинному навчанні та веб-розробці. Python є популярним.
+"""
+print("=" * 60)
+print(" ЗАВДАННЯ 3 — Словники та облік частот")
+print("=" * 60)
+
+tokens = tokenize(TEXT)
+print(f"\nТокени ({len(tokens)} шт.): {tokens[:10]} ...")
+
+freq = build_frequency(tokens)
+print(f"\nУнікальних слів: {len(freq)}")
+
+print(f"\n--- Безпечне отримання ---")
+print(f"  'python'    → {safe_get(freq, 'python')}")
+print(f"  'django'    → {safe_get(freq, 'django')}  ← відсутнє, не помилка")
+
+print_sorted_by_key(freq)
+print_sorted_by_freq(freq, top=8)
+
+filtered = filter_by_threshold(freq, min_count=2)
+print(f"\n--- Dict comprehension (частота >= 2) ---")
+print(f"  {filtered}")
+print(f"  Залишилось слів: {len(filtered)} з {len(freq)}")

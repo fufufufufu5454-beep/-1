@@ -1,0 +1,74 @@
+
+
+PRODUCTS = [
+    (1, "Зошит A4",       50,  18.50, [4, 5, 5, 4, 3]),
+    (2, "Ручка кулькова", 200,  4.75, [5, 4, 4, 5, 5]),
+    (3, "Степлер",         30, 89.00, [3, 4, 3, 4]),
+    (4, "Маркер набір",    15, 145.00, [5, 5, 4, 5]),
+    (5, "Папір A4 500арк", 40,  89.90, [4, 4, 5, 3, 4]),
+]
+
+def unpack_product(record):
+    prod_id, name, qty, price, ratings = record
+    avg = round(sum(ratings) / len(ratings), 2)
+    print(f"  ID      : {prod_id}")
+    print(f"  Назва   : {name}")
+    print(f"  Кількість: {qty} шт.")
+    print(f"  Ціна    : {price:.2f} грн")
+    print(f"  Рейтинги: {ratings}")
+    print(f"  Середній рейтинг: {avg}")
+
+def total_inventory_value(records):
+    return sum(qty * price for _, _, qty, price, _ in records)
+
+def print_table(records):
+    header = f"{'ID':>4}  {'Назва':<22} {'Кіл-ть':>7} {'Ціна':>9}  {'Рейтинг':>7}"
+    print(f"\n{header}")
+    print("-" * len(header))
+    for rec in records:
+        prod_id, name, qty, price, ratings = rec
+        avg = round(sum(ratings) / len(ratings), 2)
+        print(f"{prod_id:>4}  {name:<22} {qty:>7} {price:>9.2f}  {avg:>7.2f}")
+    print("-" * len(header))
+
+def demo_immutability(record):
+    print("\n--- Іммутабельність кортежу ---")
+    print(f"  Запис: {record}")
+    print("  Спроба record[2] = 999 ...", end=" ")
+    try:
+        record[2] = 999
+    except TypeError as e:
+        print(f"TypeError: {e}")
+
+    _, name, _, _, ratings = record
+    print(f"\n  ratings до зміни : {ratings}  id={id(ratings)}")
+    ratings.append(5)
+    print(f"  ratings після append(5): {ratings}  id={id(ratings)}")
+    print("  ← кортеж НЕ змінився, але вкладений список — так!")
+    print(f"  Кортеж: {record}")
+
+def tuples_to_dicts(records):
+    keys = ("id", "name", "quantity", "price", "ratings")
+    return [dict(zip(keys, rec)) for rec in records]
+
+# --- Запуск ---
+print("=" * 60)
+print(" ЗАВДАННЯ 2 — Кортежі та розпакування даних")
+print("=" * 60)
+
+print_table(PRODUCTS)
+
+print("\n--- Детальне розпакування запису #3 ---")
+unpack_product(PRODUCTS[2])
+
+total = total_inventory_value(PRODUCTS)
+print(f"\n--- Агрегат ---")
+print(f"  Загальна вартість складу: {total:,.2f} грн")
+
+demo_immutability(PRODUCTS[0])
+
+print("\n--- Перетворення на словники ---")
+dicts = tuples_to_dicts(PRODUCTS[:2])
+for d in dicts:
+    print(f"  {d}")
+print("  ← словник зручніший для доступу за іменем поля")
